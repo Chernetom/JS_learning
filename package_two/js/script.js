@@ -125,4 +125,53 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   
     window.addEventListener('scroll', showModalByScroll);
+
+    //class
+    class MenuCard {
+        constructor(src, alt, title,  descr, price, parentselector) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.parent = document.querySelector(parentselector);
+            this.transfer = 27;
+            this.chagedUSD();
+            
+        }
+
+        chagedUSD() {
+            this.price = this.price * this.transfer;
+        }
+
+        verst() {
+            const elem = document.createElement('div');
+            elem.innerHTML = `
+                <div class="menu__item">
+                    <img src=${this.src} alt=${this.alt}>
+                    <h3 class="menu__item-subtitle">${this.title}</h3>
+                    <div class="menu__item-descr">${this.descr}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+                    </div>
+                </div>
+            `;
+            this.parent.append(elem);
+        }
+    }
+
+     new MenuCard (
+        'img/tabs/vegy.jpg',
+        'very',
+        'Меню "Фитнес"',
+        'Меню "Фитнес" - это новый подход к приготовлению блюд',
+        9,
+        '.menu .menu__field .container'
+    ).verst();
+    
+
+
+
 });
