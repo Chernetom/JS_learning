@@ -166,16 +166,22 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-     new MenuCard (
-        'img/tabs/vegy.jpg',
-        'very',
-        'Меню "Фитнес"',
-        'Меню "Фитнес" - это новый подход к приготовлению блюд',
-        9,
-        '.menu .menu__field .container',
-        'menu__item'
-    ).verst();
-    
+    const getResource = async (url) => {
+        const res = await fetch(url);
+
+        if(!res.ok){
+            throw new Error(`Could not fetch ${url}, status ${res.status}`);
+        }
+
+        return await res.json();
+    };
+
+    getResource('http://localhost:3000/menu')
+    .then(data => {
+        data.forEach(({img, alting, title, descr, price}) => {
+            new MenuCard(img, alting, title, descr, price, 'menu .container').render();
+        });
+    });
     //Forms
 
     const forms = document.querySelectorAll('form');
@@ -186,9 +192,22 @@ window.addEventListener('DOMContentLoaded', () => {
           };
 
     forms.forEach((item) => {
-        postData(item);
+        bindPostData(item);
     });
-    function postData(form) {
+
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"},
+            body: data
+        });
+
+        return await res.json();
+    };
+
+
+    function bindPostData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -198,19 +217,11 @@ window.addEventListener('DOMContentLoaded', () => {
             form.insertAdjacentElement('afterend', statusMessage);
 
             const formData = new FormData(form);
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-            const object = {};
-            formData.forEach(function(value,key){
-                object[key]=value;
-            });
             
-            fetch('server.php', {
-                method: "POST",
-                headers: {
-                    "Content-type": "application/json"},
-                body: JSON.stringify(object)
-            }).then(data => data.text()
-            ).then(data =>{
+            postData('http://localhost:3000/requests', json)
+            .then(data => {
                 console.log(data);
                 showThanksModal(message.success);
                 statusMessage.remove();
