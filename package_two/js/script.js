@@ -260,123 +260,58 @@ window.addEventListener('DOMContentLoaded', () => {
         .then(data => data.json())
         .then(res => console.log(res));
 
-    // //sliders
-    // const tabs = document.querySelectorAll('.tabheader__item'),
-    //       tabHeader = document.querySelector('.tabheader__items'),
-    //       tabContent = document.querySelectorAll('.tabcontent');
-    
-    // function hideTabContent(){
-    //     tabContent.forEach( item => {
-    //         item.style.display = 'none';
-    //     });
-    //     tabs.forEach( item => {
-    //         item.classList.remove('tabheader__item_active');
-    //     });
-    // }
-    // function showTabContent(i) {
-    //     tabContent[i].style.display = 'block';
-    //     tabs[i].classList.add('tabheader__item_active');
-    // }
-    // hideTabContent();
-    // showTabContent(0);
-    // tabHeader.addEventListener('click', (e) => {
-    //     const target = e.target;
-    //     if (target && target.classList.contains("tabheader__item")) {
-    //         tabs.forEach((item, i) =>{
-    //             if (target == item){
-    //                 hideTabContent();
-    //                 showTabContent(i);
-    //             }
-    //         });
-    //     }
-    // });
+    //sliders
     const sliders = document.querySelectorAll('.offer__slide'),
           numberCurrentSlider = document.querySelector('#current'),
           totalNumberSliders = document.querySelector('#total'),
           nextSlider = document.querySelector('.offer__slider-next'),
           previewSlider = document.querySelector('.offer__slider-prev');
+    let slideIndex = 1;
 
-    function hideSliders() {
+    showCurrentSlider(slideIndex);
+
+    function showCurrentSlider(i) {
+        if (i > sliders.length) {
+            slideIndex = 1;
+        } 
+
+        if (i < 1) {
+            slideIndex = sliders.length;
+        }
         sliders.forEach(item => {
             item.style.display = 'none';
         });
+        sliders[slideIndex - 1].style.display = 'block';
+
+        if (sliders.length < 10) {
+            numberCurrentSlider.textContent = `0${slideIndex}`;
+            }else {
+                numberCurrentSlider.textContent = slideIndex;
+            }
     }
 
-    function showCurrentSlider(i) {
-        sliders[i].style.display = 'block';
-    }
-
-    function showNumberCurrentSlider(i) {
-        if (i < 10) {
-        numberCurrentSlider.textContent = '0' + i;
-        }else {
-            numberCurrentSlider.textContent = i;
-        }
-
-    }
-
-    function countTotalSliders() {
-        let count = 0;
-        for (let i = 0; i < sliders.length; i++){
-            count ++;
-        }
-        return count;
+    function plusSlides (n) {
+        showCurrentSlider(slideIndex += n);
     }
 
     function showTotalSliders() {
-        let count = countTotalSliders();
-        if (count < 10) {
-            totalNumberSliders.textContent = '0' + count;
+        if (sliders.length < 10) {
+            totalNumberSliders.textContent = '0' + sliders.length;
             }else {
-                totalNumberSliders.textContent = count;
+                totalNumberSliders.textContent = sliders.length;
             }
-        
     }
 
     showTotalSliders();
-    hideSliders();
-    showCurrentSlider(0);
-    showNumberCurrentSlider(1);
 
     let curSlider = 0;
 
-    nextSlider.addEventListener ('click', (e) => {
-        const target = e.target;
-        const totalSliders = countTotalSliders ();
-        if (curSlider < totalSliders - 1){
-        // if (target && target.classList.contains('offer__slider-counter')){
-            hideSliders();
-            ++curSlider;
-            showCurrentSlider(curSlider);
-            showNumberCurrentSlider(curSlider + 1);
-        // }
-        } else {
-            hideSliders();
-            curSlider = 0;
-            showCurrentSlider(curSlider);
-            showNumberCurrentSlider(curSlider + 1);
-        }
+    nextSlider.addEventListener ('click', () => {
+        plusSlides(1);
     });
 
-    console.log(curSlider);
-
-    previewSlider.addEventListener ('click', (e) => {
-        const target = e.target;
-        const totalSliders = countTotalSliders ();
-        if (curSlider > 0){
-        // if (target && target.classList.contains('offer__slider-counter')){
-            hideSliders();
-            --curSlider;
-            showCurrentSlider(curSlider);
-            showNumberCurrentSlider(curSlider + 1);
-            console.log(curSlider);
-        // }
-        } else {
-            hideSliders();
-            curSlider = totalSliders -1;
-            showCurrentSlider(curSlider);
-            showNumberCurrentSlider(curSlider + 1);
-        }
+    previewSlider.addEventListener ('click', () => {
+        plusSlides(-1);
     });
 
 
