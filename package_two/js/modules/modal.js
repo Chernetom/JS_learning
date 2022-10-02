@@ -1,40 +1,42 @@
-function modal () {
+function showModalWindow (modalSelector, modalTimerId) {
+    let classModal = document.querySelector(modalSelector);
+    classModal.style = "display: block";
+            document.body.style.overflow = 'hidden';
+            document.addEventListener('keydown', (e) => {
+                if(e.code === 'Escape'){
+                    closeModalWindow();
+                }
+            });
+    if (modalTimerId){
+    clearInterval(modalTimerId);
+    }
+}
+
+function closeModalWindow (modalSelector) {
+    let classModal = document.querySelector(modalSelector);
+    classModal.style = 'display: none';
+    document.body.style.overflow = '';
+}
+
+
+function modal (trigerSelector, modalSelector, modalTimerId ) {
     //modal
-    const modalButton = document.querySelectorAll('[data-modal]');
-    let classModal = document.querySelector('.modal');
+    const modalButton = document.querySelectorAll(trigerSelector);
+    let classModal = document.querySelector(modalSelector);
 
-    
-    function showModalWindow () {
-        classModal.style = "display: block";
-                document.body.style.overflow = 'hidden';
-                document.addEventListener('keydown', (e) => {
-                    if(e.code === 'Escape'){
-                        closeModalWindow();
-                    }
-                });
-        clearInterval(modalTimerId);
-    }
     modalButton.forEach( (item) => {
-        item.addEventListener('click', showModalWindow);
+        item.addEventListener('click', () => showModalWindow(modalSelector, modalTimerId));
     });
-    
-    function closeModalWindow () {
-        classModal.style = 'display: none';
-        document.body.style.overflow = '';
-    }
-
     
     classModal.addEventListener('click', (e) => {
         if(e.target === classModal || e.target.getAttribute('data-close') == ''){
-            closeModalWindow();
+            closeModalWindow(modalSelector);
         }
     });
 
-    const modalTimerId = setTimeout(showModalWindow, 3000);
-
     function showModalByScroll(){
         if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
-            showModalWindow();
+            showModalWindow(modalSelector, modalTimerId);
             window.removeEventListener('scroll', showModalByScroll);
         }
     }
@@ -42,4 +44,6 @@ function modal () {
     window.addEventListener('scroll', showModalByScroll);
 }
 
-module.exports = modal;
+export default modal;
+export {closeModalWindow};
+export {showModalWindow};

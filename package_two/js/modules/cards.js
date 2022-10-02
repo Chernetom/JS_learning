@@ -1,14 +1,16 @@
+import {getResource} from '../services/services';
+
 function cards () {
     //class
     class MenuCard {
-        constructor(src, alt, title,  descr, price, parentselector, ...classes) {
+        constructor(src, alt, title, descr, price, parentSelector, ...classes) {
             this.src = src;
             this.alt = alt;
             this.title = title;
             this.descr = descr;
             this.price = price;
             this.classes = classes;
-            this.parent = document.querySelector(parentselector);
+            this.parent = document.querySelector(parentSelector);
             this.transfer = 27;
             this.chagedUSD();
             
@@ -20,9 +22,9 @@ function cards () {
 
         verst() {
             const elem = document.createElement('div');
-            if(this.classes.length == 0) {
-                this.element = 'menu__item';
-                elem.classList.add(this.element);
+            if(this.classes.length === 0) {
+                this.classes = "menu__item";
+                elem.classList.add(this.classes);
             } else {
                 this.classes.forEach(className => elem.classList.add(className));
             }
@@ -39,23 +41,14 @@ function cards () {
             this.parent.append(elem);
         }
     }
-
-    const getResource = async (url) => {
-        const res = await fetch(url);
-
-        if(!res.ok){
-            throw new Error(`Could not fetch ${url}, status ${res.status}`);
-        }
-
-        return await res.json();
-    };
+    
 
     getResource('http://localhost:3000/menu')
-    .then(data => {
-        data.forEach(({img, alting, title, descr, price}) => {
-            new MenuCard(img, alting, title, descr, price, 'menu .container').render();
+        .then(data => {
+            data.forEach(({img, alting, title, descr, price}) => {
+                new MenuCard(img, alting, title, descr, price, ".menu .container").verst();
+            });
         });
-    });
 }
 
-module.exports = cards;
+export default cards;

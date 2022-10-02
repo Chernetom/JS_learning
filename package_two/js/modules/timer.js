@@ -1,6 +1,5 @@
-function timer () {
+function timer (id, deadline) {
     //timer
-    const deadline = '2022-09-31';
     function getDataTimer(endtime){
         const timer = Date.parse(endtime) - Date.parse(new Date()),
                 days = Math.floor(timer / (1000 * 60 * 60 * 24)),
@@ -49,7 +48,7 @@ function timer () {
         }
     }
 
-    setDataTimer('.timer', deadline);
+    setDataTimer(id, deadline);
 }
 
-module.exports = timer;
+export default timer;
